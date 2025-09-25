@@ -2,7 +2,7 @@
 set -e
 
 echo "🔐 Logging into Docker Registry..."
-docker login -u "$REGISTRY_USERNAME" -p "$REGISTRY_PASSWORD" "$REGISTRY_URL"
+docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD" "$REGISTRY_URL"
 
 echo "📦 Pulling latest image..."
 docker pull "$IMAGE_NAME"

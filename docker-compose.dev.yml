@@ -2,16 +2,29 @@ version: '3.8'
 
 services:
   demo:
-    container_name: demo-app
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     image: demo:local
     env_file:
       - .env.dev
     ports:
       - "8080:8080"
-    volumes:
-      - .:/app           # Mount local code into container (optional, for live reload)
     restart: unless-stopped
-    command: npm run dev  # Or whatever your dev command is
+
+  deploy:
+    image: bec720:ef5a371612544fc08c04675150e21630
+    working_dir: /github/workspace
+    environment:
+      INPUT_HOST: your.server.com
+      INPUT_USERNAME: ubuntu
+      INPUT_KEY: |
+        -----BEGIN OPENSSH PRIVATE KEY-----
+        (your private key content here)
+        -----END OPENSSH PRIVATE KEY-----
+      INPUT_SCRIPT: ./deploy.sh
+      GITHUB_ACTIONS: "true"
+      CI: "true"
+      # Add more as needed from the -e list
+    volumes:
+      - .:/github/workspace
+      - /var/run/docker.sock:/var/run/docker.sock
+    entrypoint: ["/bin/sh", "-c", "./deploy.sh"]
